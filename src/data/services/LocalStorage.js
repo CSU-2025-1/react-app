@@ -16,7 +16,7 @@ export const LocalStorage = {
         if (!Array.isArray(data)) {
           resolve(defaultResult);
           return;
-        }
+        } 
     
         resolve(data);
       }, 500);
@@ -30,6 +30,33 @@ export const LocalStorage = {
         localStorage.setItem(TODO_ITEMS_LOCAL_STORAGE_KEY, JSON.stringify(newTodoItems));
         resolve();
       })
+    });
+  },
+
+  deleteTodoItemToLocalStorage: (itemId) => {
+    return new Promise((resolve, reject) => {
+      LocalStorage.getTodoItemsFromLocalStorage().then((todoItems) => {
+        const newTodoItems = todoItems.filter(item => item.id !== itemId);
+        localStorage.setItem(TODO_ITEMS_LOCAL_STORAGE_KEY, JSON.stringify(newTodoItems));
+        resolve();
+      })
+    });
+  },
+
+  updateTodoItemInLocalStorage: (id, checked, priority) => {
+    return new Promise((resolve, reject) => {
+        LocalStorage.getTodoItemsFromLocalStorage().then((todoItems) => {
+            const newTodoItems = todoItems.map(item =>
+                item.id === id ? {
+                    id: item.id,
+                    title: item.title,
+                    isDone: checked,
+                    priority: priority
+                } : item
+            );
+            localStorage.setItem(TODO_ITEMS_LOCAL_STORAGE_KEY, JSON.stringify(newTodoItems));
+            resolve();
+        })
     });
   }
 }
